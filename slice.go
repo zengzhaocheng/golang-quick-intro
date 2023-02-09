@@ -34,7 +34,8 @@ func main() {
 
 	println("=====面试题1：https://juejin.cn/post/6844903859257606158====")
 	s := []int{1, 2, 3, 4, 5, 6}
-	fmt.Printf("address of s:%v\n", s)
+	//fmt.Printf("address of s:%v\n", s)
+	println(&s[0])
 	Assign1(s)
 	fmt.Println(s) // (1)
 	array := [5]int{1, 2, 3, 4, 5}
@@ -82,6 +83,36 @@ func main() {
 	println("=====1.数组和切片有什么区别？====")
 	println("=====2.拷贝大切片一定比拷贝小切片代价大吗？====")
 
+	println("====面试题3：https://juejin.cn/post/6844904177022271501====")
+	println("Go Slice探秘——slice作为函数参数传递时，若修改函数中的slice，到底会不会改变原slice的值？")
+
+	println("======场景1===========")
+	// myWeight是我7天的体重值序列
+	myWeight := []int{11, 12, 13, 14, 15, 16, 17}
+	fmt.Printf("myWeight: %v\n", myWeight)
+	fmt.Printf("address of myWeight: %p    %p\n", myWeight, &myWeight)
+	fmt.Printf("myWeight len: %v, cap: %v\n\n", len(myWeight), cap(myWeight))
+
+	// 重置数据
+	resetWeight(myWeight)
+	fmt.Printf("myWeight after reset: %v\n", myWeight)
+	fmt.Printf("address of myWeight after reset: %p    %p\n", myWeight, &myWeight)
+	fmt.Printf("myWeight len: %v, cap: %v\n", len(myWeight), cap(myWeight))
+
+	/* 作者：flappybird
+	   链接：https://juejin.cn/post/6844904177022271501
+	   来源：稀土掘金
+	   著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处 */
+	println("======场景2：在函数中向slice添加成员===========")
+	myWeight = make([]int, 1, 3)
+	fmt.Printf("myWeight: %v\n", myWeight)
+	fmt.Printf("address of myWeight: %p       %p\n", myWeight, &myWeight)
+	fmt.Printf("myWeight len: %v, cap: %v\n\n", len(myWeight), cap(myWeight))
+	addWeightRecord(myWeight)
+	fmt.Printf("myWeight after add: %v\n", myWeight)
+	fmt.Printf("address of myWeight after add: %p     %p\n", myWeight, &myWeight)
+	fmt.Printf("myWeight len: %v, cap: %v\n", len(myWeight), cap(myWeight))
+
 }
 
 func printSlice(x []int) {
@@ -89,7 +120,9 @@ func printSlice(x []int) {
 }
 
 func Assign1(s []int) {
+	println(&s[0])
 	s = []int{6, 6, 6}
+	println(&s[0])
 }
 
 func Reverse0(s [5]int) {
@@ -121,4 +154,26 @@ func Reverse3(s []int) {
 		j = len(s) - (i + 1)
 		s[i], s[j] = s[j], s[i]
 	}
+}
+func resetWeight(weight []int) {
+	for i := 0; i < len(weight); i++ {
+		weight[i] = weight[i] + i*10
+	}
+	fmt.Printf("address of weight: %p      %p\n\n", weight, &weight)
+}
+
+func addWeightRecord(weight []int) {
+	weightCap := cap(weight)
+	weight[0] = 10
+	fmt.Printf("cap of weight: %v\n\n", weightCap)
+	for i := 0; i < weightCap-1; i++ {
+		weight = append(weight, i)
+		fmt.Printf("weight: %v\n", weight)
+		fmt.Printf("address of weight: %p     %p\n", weight, &weight)
+		fmt.Printf("weight len: %v, cap: %v\n", len(weight), cap(weight))
+	}
+
+	fmt.Printf("weight: %v\n", weight)
+	fmt.Printf("address of weight: %p     %p\n", weight, &weight)
+	fmt.Printf("weight len: %v, cap: %v\n", len(weight), cap(weight))
 }
